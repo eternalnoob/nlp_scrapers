@@ -4,7 +4,6 @@ import microdata
 import urllib
 from lxml import html
 import itertools
-from functools import partial
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, JSON, Text, DECIMAL, Integer
 from sqlalchemy.orm import sessionmaker
@@ -35,7 +34,7 @@ class Product(Base):
         self.raw = item.json()
         self.description = item.description
         self.name = item.name
-        self.model = int(45) #PLACEHOLDER
+        self.model = int(item.productID)
         self.price = Decimal(item.offers.price) if item.offers.price else Decimal(0)
         self.bad_rating = next((x.description for x in
             item.get_all('reviews') if int(x.reviewRating.ratingValue) < 3),
@@ -44,8 +43,8 @@ class Product(Base):
             item.get_all('reviews') if int(x.reviewRating.ratingValue) > 3),
             'No Positive Rating')
         self.brand = item.brand.name
-        self.rating_count = 10 # PLACEHOLDER
-        self.avgrating = Decimal(3.5)
+        self.rating_count = int(item.aggregateRating.reviewCount)
+        self.avgrating = Decimal(item.aggregateRating.ratingValue)
 
 
 def typematch(item, itemtype=''):
@@ -58,7 +57,9 @@ item_feed = html.fromstring(urllib.request.urlopen(bestbuy).read())
 bestbuybaseurl = 'http://www.bestbuy.com'
 
 # find all links to products
-links = [bestbuybaseurl+x.get('href') for x in  list(itertools.chain.from_iterable([x.getchildren() for x in item_feed.find_class('offer-link')]))]
+links = [bestbuybaseurl+x.get('href') for x in
+        list(itertools.chain.from_iterable([x.getchildren() for x in
+            item_feed.find_class('offer-link')]))]
 
 #follow links and scrape the schema objects from them
 top_products = list(filter(lambda item: typematch(item, itemtype =
@@ -72,4 +73,3 @@ top_products_models = [Product(x) for x in top_products]
 for x in top_products_models:
     session.add(x)
 session.commit()
-
