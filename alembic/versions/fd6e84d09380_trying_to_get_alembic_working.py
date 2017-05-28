@@ -18,18 +18,18 @@ import sqlalchemy as sa
 
 def upgrade():
     op.create_table(
-    'products',
-    sa.Column('id', sa.INTEGER, primary_key=True),
-    sa.Column('raw', sa.JSON),
-    sa.Column('name', sa.Text),
-    sa.Column('description', sa.Text),
-    sa.Column('brand', sa.Text),
-    sa.Column('price', sa.DECIMAL),
-    sa.Column('avgrating', sa.DECIMAL),
-    sa.Column('model', sa.Text),
-    sa.Column('rating_count', sa.Integer),
-    sa.Column('good_rating', sa.Text),
-    sa.Column('bad_rating', sa.Text)
+            'products',
+            sa.Column('id', sa.INTEGER, primary_key=True),
+            sa.Column('raw', sa.JSON),
+            sa.Column('name', sa.Text),
+            sa.Column('description', sa.Text),
+            sa.Column('brand', sa.Text),
+            sa.Column('price', sa.DECIMAL),
+            sa.Column('avgrating', sa.DECIMAL),
+            sa.Column('model', sa.Text),
+            sa.Column('rating_count', sa.Integer),
+            sa.Column('good_rating', sa.Text),
+            sa.Column('bad_rating', sa.Text)
             )
     pass
 
