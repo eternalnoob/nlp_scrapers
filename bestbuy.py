@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import create_engine
 import microdata
+from utility import typematch
 import urllib
 from lxml import html
 import itertools
@@ -46,9 +47,6 @@ class Product(Base):
         self.rating_count = int(item.aggregateRating.reviewCount)
         self.avgrating = Decimal(item.aggregateRating.ratingValue)
 
-
-def typematch(item, itemtype=''):
-    return str(item.itemtype[0]) == itemtype
 
 bestbuy = 'http://www.bestbuy.com/site/misc/new-technology/pcmcat234500050002.c?id=pcmcat234500050002'
 found_schema_items = microdata.get_items(urllib.request.urlopen(bestbuy))
